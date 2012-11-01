@@ -20,5 +20,6 @@ app.use express.static 'public'
 app.get '/', (req, rsp) ->
   rsp.send 'Hello, World!'
 
-app.listen 3000
+port = process.env.PORT || 3000
+app.listen port
 console.log 'Listening on port 3000'
