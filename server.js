@@ -24,7 +24,9 @@
 
   app.use(passport.initialize());
 
-  app.use(passport.session());
+  app.use(passport.session({
+    secret: 'gangnam style'
+  }));
 
   app.use(express["static"]('public'));
 

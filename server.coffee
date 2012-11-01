@@ -14,7 +14,7 @@ app.use express.cookieParser()
 app.use express.bodyParser()
 app.use express.cookieSession()
 app.use passport.initialize()
-app.use passport.session()
+app.use passport.session { secret: 'gangnam style' }
 app.use express.static 'public'
 
 app.get '/', (req, rsp) ->
