@@ -20,13 +20,13 @@
 
   app.use(express.bodyParser());
 
-  app.use(express.cookieSession());
+  app.use(express.cookieSession({
+    secret: 'gangnam style'
+  }));
 
   app.use(passport.initialize());
 
-  app.use(passport.session({
-    secret: 'gangnam style'
-  }));
+  app.use(passport.session());
 
   app.use(express["static"]('public'));
 
