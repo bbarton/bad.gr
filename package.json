@@ -4,7 +4,10 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "url": "*",
     "express": "3.x",
-    "passport": "*"
+    "passport": "*",
+    "hiredis": "*",
+    "redis": "*"
   }
 }
