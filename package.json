@@ -9,5 +9,9 @@
     "passport": "*",
     "hiredis": "*",
     "redis": "*"
+  },
+  "engines": {
+    "node": "*",
+    "npm":  "*"
   }
 }
