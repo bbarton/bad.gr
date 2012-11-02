@@ -12,7 +12,7 @@ passport = require 'passport'
 
 app.use express.cookieParser()
 app.use express.bodyParser()
-app.use express.cookieSession { secret: 'gangnam style' }
+app.use express.cookieSession { secret: process.env.secret }
 app.use passport.initialize()
 app.use passport.session()
 app.use express.static __dirname + '/static'

@@ -21,7 +21,7 @@
   app.use(express.bodyParser());
 
   app.use(express.cookieSession({
-    secret: 'gangnam style'
+    secret: process.env.secret
   }));
 
   app.use(passport.initialize());
