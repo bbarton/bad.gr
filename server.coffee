@@ -15,11 +15,10 @@ app.use express.bodyParser()
 app.use express.cookieSession { secret: 'gangnam style' }
 app.use passport.initialize()
 app.use passport.session()
-app.use express.static 'public'
+app.use express.static __dirname + '/static'
 
-app.get '/', (req, rsp) ->
-  rsp.send 'Hello, World!'
+#app.get '/', (req, rsp) ->
+#  rsp.send 'Hello, World!'
 
 port = process.env.PORT || 3000
 app.listen port
-console.log 'Listening on port 3000'

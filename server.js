@@ -28,16 +28,10 @@
 
   app.use(passport.session());
 
-  app.use(express["static"]('public'));
-
-  app.get('/', function(req, rsp) {
-    return rsp.send('Hello, World!');
-  });
+  app.use(express["static"](__dirname + '/static'));
 
   port = process.env.PORT || 3000;
 
   app.listen(port);
-
-  console.log('Listening on port 3000');
 
 }).call(this);
