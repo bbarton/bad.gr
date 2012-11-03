@@ -139,9 +139,30 @@ body {
   margin: 50px auto;
 }
 /* line 88, ../sass/main.sass */
-#right #entry-container textarea {
+#right #entry-container #text-container {
+  position: relative;
+}
+/* line 90, ../sass/main.sass */
+#right #entry-container #text-container #entry-head {
+  background-color: #a01b1b;
+  width: 6px;
+  height: 26px;
+  position: absolute;
+  top: 3px;
+  left: -15px;
+}
+/* line 97, ../sass/main.sass */
+#right #entry-container #text-container textarea {
   width: 100%;
   min-height: 200px;
   border: none;
+  margin: 0px;
+  background-color: transparent;
+  font: 1.5em Helvetica Neue;
+  color: #818080;
   resize: none;
+}
+/* line 106, ../sass/main.sass */
+#right #entry-container #text-container textarea:focus {
+  outline: none;
 }

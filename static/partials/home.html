@@ -48,7 +48,10 @@
 </div>
 <div id='right'>
   <div id='entry-container'>
-    <textarea ng:model='post.content'></textarea>
+    <div id='text-container'>
+      <div id='entry-head'></div>
+      <textarea ng:model='post.content'></textarea>
+    </div>
     <div ng:click='post()' id='post'></div>
   </div>
 </div>

@@ -85,8 +85,23 @@ body
   #entry-container
     width: 90%
     margin: 50px auto
-    textarea
-      width: 100%
-      min-height: 200px
-      border: none
-      resize: none
+    #text-container
+      position: relative
+      #entry-head
+        background-color: hsl(360, 70.9%, 36.8%)
+        width: 6px
+        height: 26px
+        position: absolute
+        top: 3px
+        left: -15px
+      textarea
+        width: 100%
+        min-height: 200px
+        border: none
+        margin: 0px
+        background-color: transparent
+        font: 1.5em Helvetica Neue
+        color: hsl(360, 0.4%, 50.4%)
+        resize: none
+        &:focus
+          outline: none
