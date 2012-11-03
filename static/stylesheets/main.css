@@ -6,18 +6,17 @@ body {
 
 /* line 9, ../sass/main.sass */
 #container {
-  width: 970px;
   margin: auto;
 }
 /* line 12, ../sass/main.sass */
 #container #left {
   float: left;
+  width: 230px;
 }
-/* line 14, ../sass/main.sass */
+/* line 15, ../sass/main.sass */
 #container #left .tabs {
   background-color: #161514;
   height: 100%;
-  width: 230px;
 }
 /* line 18, ../sass/main.sass */
 #container #left .tabs .tab {
@@ -92,4 +91,17 @@ body {
 #container #right {
   background-color: #e2e2e2;
   height: 100%;
+  overflow: auto;
+}
+/* line 65, ../sass/main.sass */
+#container #right #entry-container {
+  width: 90%;
+  margin: 50px auto;
+}
+/* line 68, ../sass/main.sass */
+#container #right #entry-container textarea {
+  width: 100%;
+  min-height: 200px;
+  border: none;
+  resize: none;
 }
