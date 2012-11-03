@@ -1,0 +1,63 @@
+@import "compass/css3/images"
+@import "compass/css3/text-shadow"
+@import "compass/css3/box-shadow"
+
+body
+  margin: 0
+  background-color: hsl(0, 0%, 15.7%)
+
+#container
+  width: 970px
+  margin: auto
+  #left
+    float: left
+    .tabs
+      background-color: hsl(30, 4.8%, 8.2%)
+      height: 100%
+      width: 230px
+      .tab
+        overflow: auto
+        height: 50px
+        border-bottom: thin solid hsl(360, 13%, 4.5%)
+        border-top: thin solid hsl(360, 1.9%, 10.4%)
+        cursor: pointer
+        &:first-child
+          border-top: none
+        &:last-child
+          border-bottom: none
+        .content
+          margin-top: 16px
+          .icon
+            width: 17px
+            height: 15px
+            float: left
+            margin-left: 10px
+          .title
+            float: left
+            margin-left: 10px
+            margin-top: -1px
+            font-family: Helvetica Neue
+            color: whiteSmoke
+            +text-shadow(0 2px 1px black)
+          .num-container
+            float: right
+            margin: -4px 15px 0 0
+            width: 40px
+            height: 28px
+            background-color: #100f0e // color overlay
+            +box-shadow(0 2px 2px hsl(40, 6.1%, 9.6%), 0 0 12px hsla(0, 0%, 0%, 0.75) inset)
+            .num
+              color: hsl(30, 3%, 12.9%)
+              font-family: Helvetica Neue
+              font-weight: bold
+              font-size: 1.2em
+              margin: 2px 0px 0px 15px
+        &.selected
+          +background-image(linear-gradient(bottom, #861818 -16%, #BB2626 116%))
+          .title
+            color: hsl(1, 72%, 15.5%)
+            +text-shadow(0 2px 1px hsl(1, 73.4440%, 47.2549%))
+            font-weight: 500
+  #right
+    background-color: hsl(0, 0%, 88.6%)
+    height: 100%
