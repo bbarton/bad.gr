@@ -1,6 +1,7 @@
 @import "compass/css3/images"
 @import "compass/css3/text-shadow"
 @import "compass/css3/box-shadow"
+@import "compass/css3/filter"
 
 body
   margin: 0
@@ -47,6 +48,9 @@ body
         margin-top: 16px
         position: relative
         z-index: 1
+        +filter(grayscale(1))
+        &.active
+          +filter(grayscale(0))
         .icon
           width: 17px
           height: 15px
@@ -64,7 +68,7 @@ body
           margin: -4px 15px 0 0
           width: 40px
           height: 28px
-          background-color: #100f0e // color overlay
+          background-color: #100f0e
           +box-shadow(0 2px 2px hsl(40, 6.1%, 9.6%), 0 0 12px hsla(0, 0%, 0%, 0.75) inset)
           .num
             color: hsl(30, 3%, 12.9%)

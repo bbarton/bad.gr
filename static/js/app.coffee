@@ -1,6 +1,6 @@
 HomeController = ($scope, $http) ->
 
-angular.module('badgr', [])
+angular.module('badgr', ['ngCookies'])
   .config([ '$routeProvider', '$locationProvider', '$httpProvider', ($routeProvider, $locationProvider, $httpProvider) ->
     $routeProvider.when('/',
       templateUrl: '/partials/home.html'

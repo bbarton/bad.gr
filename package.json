@@ -6,9 +6,10 @@
   "dependencies": {
     "url": "*",
     "express": "3.x",
-    "passport": "*",
     "hiredis": "*",
-    "redis": "*"
+    "redis": "*",
+    "passport": "*",
+    "passport-twitter": "*"
   },
   "engines": {
     "node": "0.8.12",
