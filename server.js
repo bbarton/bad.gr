@@ -32,15 +32,36 @@
 
   app.use(express["static"](__dirname + '/static'));
 
+  passport.serializeUser(function(user, done) {
+    return done(null, user.id);
+  });
+
+  passport.deserializeUser(function(id, done) {
+    return redis.hgetall('user:' + id, function(err, user) {
+      return done(err, user);
+    });
+  });
+
   passport.use(new TwitterStrategy({
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
     consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: 'http://127.0.0.1:3000/auth/twitter/callback'
   }, function(token, tokenSecret, profile, done) {
-    return User.findOrCreate({
-      twitterId: profile.id
-    }, function(err, user) {
-      return done(err, user);
+    return redis.get('twitter:' + profile.id, function(err, uid) {
+      if (uid) {
+        return redis.hgetall('user:' + uid, function(err, user) {
+          return done(err, user);
+        });
+      } else {
+        return redis.incr('users', function(err, num) {
+          redis.set('twitter:' + profile.id, num);
+          redis.hset('user:' + num, 'twitter', profile.id);
+          redis.hset('user:' + num, 'id', num);
+          return redis.hgetall('user:' + num, function(err, user) {
+            return done(err, user);
+          });
+        });
+      }
     });
   }));
 
@@ -49,8 +70,10 @@
   app.get('/auth/twitter/callback', passport.authenticate('twitter', {
     failureRedirect: '/'
   }), function(req, res) {
-    console.log(req);
-    console.log(redis);
+    console.log(req.session);
+    console.log(req.session['oauth:twitter'].oauth_token);
+    redis.hset('user:' + req.user.id, 'oauth:twitter_key', rsp.session['oauth:twitter'].oauth_token);
+    redis.hset('user:' + req.user.id, 'oauth:twitter_secret', rsp.session['oauth:twitter'].oauth_token_secret);
     return res.redirect('/');
   });
 

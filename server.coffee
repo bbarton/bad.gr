@@ -18,26 +18,33 @@ app.use passport.initialize()
 app.use passport.session()
 app.use express.static __dirname + '/static'
 
+passport.serializeUser (user, done) -> done null, user.id
+
+passport.deserializeUser (id, done) -> redis.hgetall 'user:' + id, (err, user) -> done err, user
+
 passport.use new TwitterStrategy(
   consumerKey: process.env.TWITTER_CONSUMER_KEY
   consumerSecret: process.env.TWITTER_CONSUMER_SECRET
   callbackURL: 'http://127.0.0.1:3000/auth/twitter/callback',
   (token, tokenSecret, profile, done) ->
-    User.findOrCreate
-      twitterId: profile.id,
-      (err, user) -> done err, user
+    redis.get 'twitter:' + profile.id, (err, uid) ->
+      if uid
+        redis.hgetall 'user:' + uid, (err, user) -> done err, user
+      else
+        redis.incr 'users', (err, num) ->
+          redis.set 'twitter:' + profile.id, num
+          redis.hset 'user:' + num, 'twitter', profile.id
+          redis.hset 'user:' + num, 'id', num
+          redis.hgetall 'user:' + num, (err, user) -> done err, user
 )
-
-#app.get '/', (req, rsp) ->
-#  rsp.send 'Hello, World!'
 
 app.get '/auth/twitter', passport.authenticate 'twitter'
 
-app.get '/auth/twitter/callback', passport.authenticate('twitter',
-  failureRedirect: '/'
-), (req, res) ->
-  console.log req
-  console.log redis
+app.get '/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }), (req, res) ->
+  console.log req.session
+  console.log req.session['oauth:twitter'].oauth_token
+  redis.hset 'user:' + req.user.id, 'oauth:twitter_key',    rsp.session['oauth:twitter'].oauth_token
+  redis.hset 'user:' + req.user.id, 'oauth:twitter_secret', rsp.session['oauth:twitter'].oauth_token_secret
   res.redirect '/'
 
 port = process.env.PORT || 3000
