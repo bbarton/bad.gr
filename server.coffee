@@ -18,6 +18,12 @@ app.use passport.initialize()
 app.use passport.session()
 app.use express.static __dirname + '/static'
 
+app.use (req, res, next) ->
+  cookies = req.cookies['connect.sess']
+  if cookies
+    req.session.oauth_twitter = JSON.parse(cookies.substring(4,cookies.length).match(/.*}}/)[0])['oauth:twitter']
+  next()
+
 passport.serializeUser (user, done) -> done null, user.id
 
 passport.deserializeUser (id, done) -> redis.hgetall 'user:' + id, (err, user) -> done err, user
@@ -41,10 +47,8 @@ passport.use new TwitterStrategy(
 app.get '/auth/twitter', passport.authenticate 'twitter'
 
 app.get '/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }), (req, res) ->
-  console.log req.session
-  console.log req.session['oauth:twitter'].oauth_token
-  redis.hset 'user:' + req.user.id, 'oauth:twitter_key',    rsp.session['oauth:twitter'].oauth_token
-  redis.hset 'user:' + req.user.id, 'oauth:twitter_secret', rsp.session['oauth:twitter'].oauth_token_secret
+  redis.hset 'user:' + req.user.id, 'oauth:twitter_key',    req.session['oauth_twitter'].oauth_token
+  redis.hset 'user:' + req.user.id, 'oauth:twitter_secret', req.session['oauth_twitter'].oauth_token_secret
   res.redirect '/'
 
 port = process.env.PORT || 3000

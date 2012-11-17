@@ -32,6 +32,15 @@
 
   app.use(express["static"](__dirname + '/static'));
 
+  app.use(function(req, res, next) {
+    var cookies;
+    cookies = req.cookies['connect.sess'];
+    if (cookies) {
+      req.session.oauth_twitter = JSON.parse(cookies.substring(4, cookies.length).match(/.*}}/)[0])['oauth:twitter'];
+    }
+    return next();
+  });
+
   passport.serializeUser(function(user, done) {
     return done(null, user.id);
   });
@@ -70,10 +79,8 @@
   app.get('/auth/twitter/callback', passport.authenticate('twitter', {
     failureRedirect: '/'
   }), function(req, res) {
-    console.log(req.session);
-    console.log(req.session['oauth:twitter'].oauth_token);
-    redis.hset('user:' + req.user.id, 'oauth:twitter_key', rsp.session['oauth:twitter'].oauth_token);
-    redis.hset('user:' + req.user.id, 'oauth:twitter_secret', rsp.session['oauth:twitter'].oauth_token_secret);
+    redis.hset('user:' + req.user.id, 'oauth:twitter_key', req.session['oauth_twitter'].oauth_token);
+    redis.hset('user:' + req.user.id, 'oauth:twitter_secret', req.session['oauth_twitter'].oauth_token_secret);
     return res.redirect('/');
   });
 
