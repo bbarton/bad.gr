@@ -21,7 +21,8 @@ app.use express.static __dirname + '/static'
 app.use (req, res, next) ->
   cookies = req.cookies['connect.sess']
   if cookies
-    req.session.oauth_twitter = JSON.parse(cookies.substring(4,cookies.length).match(/.*}}/)[0])['oauth:twitter']
+    cookie_slice = cookies.substring(4,cookies.length).match(/(.*})\./)[1]
+    req.session.oauth_twitter = JSON.parse(cookie_slice)['oauth:twitter']
   next()
 
 passport.serializeUser (user, done) -> done null, user.id
@@ -47,6 +48,8 @@ passport.use new TwitterStrategy(
 app.get '/auth/twitter', passport.authenticate 'twitter'
 
 app.get '/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }), (req, res) ->
+  console.log req.cookies
+  console.log req.session
   redis.hset 'user:' + req.user.id, 'oauth:twitter_key',    req.session['oauth_twitter'].oauth_token
   redis.hset 'user:' + req.user.id, 'oauth:twitter_secret', req.session['oauth_twitter'].oauth_token_secret
   res.redirect '/'

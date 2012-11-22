@@ -33,10 +33,11 @@
   app.use(express["static"](__dirname + '/static'));
 
   app.use(function(req, res, next) {
-    var cookies;
+    var cookie_slice, cookies;
     cookies = req.cookies['connect.sess'];
     if (cookies) {
-      req.session.oauth_twitter = JSON.parse(cookies.substring(4, cookies.length).match(/.*}}/)[0])['oauth:twitter'];
+      cookie_slice = cookies.substring(4, cookies.length).match(/(.*})\./)[1];
+      req.session.oauth_twitter = JSON.parse(cookie_slice)['oauth:twitter'];
     }
     return next();
   });
@@ -79,6 +80,8 @@
   app.get('/auth/twitter/callback', passport.authenticate('twitter', {
     failureRedirect: '/'
   }), function(req, res) {
+    console.log(req.cookies);
+    console.log(req.session);
     redis.hset('user:' + req.user.id, 'oauth:twitter_key', req.session['oauth_twitter'].oauth_token);
     redis.hset('user:' + req.user.id, 'oauth:twitter_secret', req.session['oauth_twitter'].oauth_token_secret);
     return res.redirect('/');
