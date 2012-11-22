@@ -48,8 +48,6 @@ passport.use new TwitterStrategy(
 app.get '/auth/twitter', passport.authenticate 'twitter'
 
 app.get '/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }), (req, res) ->
-  console.log req.cookies
-  console.log req.session
   redis.hset 'user:' + req.user.id, 'oauth:twitter_key',    req.session['oauth_twitter'].oauth_token
   redis.hset 'user:' + req.user.id, 'oauth:twitter_secret', req.session['oauth_twitter'].oauth_token_secret
   res.redirect '/'
