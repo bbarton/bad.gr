@@ -9,7 +9,8 @@
     "hiredis": "*",
     "redis": "*",
     "passport": "*",
-    "passport-twitter": "*"
+    "passport-twitter": "*",
+    "twitter": "*"
   },
   "engines": {
     "node": "0.8.12",

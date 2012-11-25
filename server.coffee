@@ -6,6 +6,7 @@ else
   redis = require('redis').createClient()
 
 express = require 'express'
+twitter = require 'twitter'
 app = express()
 
 passport = require 'passport'
@@ -18,11 +19,14 @@ app.use passport.initialize()
 app.use passport.session()
 app.use express.static __dirname + '/static'
 
+fetchUser = (id, callback) -> redis.hgetall 'user:' + id, (err, user) -> callback user || { id: null }
+
 app.use (req, res, next) ->
   cookies = req.cookies['connect.sess']
   if cookies
     cookie_slice = cookies.substring(4,cookies.length).match(/(.*})\./)[1]
-    req.session.oauth_twitter = JSON.parse(cookie_slice)['oauth:twitter']
+    json = JSON.parse(cookie_slice)
+    req.session.oauth_twitter = json['oauth:twitter'] if json['oauth:twitter']
   next()
 
 passport.serializeUser (user, done) -> done null, user.id
@@ -45,12 +49,28 @@ passport.use new TwitterStrategy(
           redis.hgetall 'user:' + num, (err, user) -> done err, user
 )
 
+app.get '/user', (req, res) -> fetchUser req.session.passport.user, (user) -> res.json user
+
 app.get '/auth/twitter', passport.authenticate 'twitter'
 
 app.get '/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }), (req, res) ->
   redis.hset 'user:' + req.user.id, 'oauth:twitter_key',    req.session['oauth_twitter'].oauth_token
   redis.hset 'user:' + req.user.id, 'oauth:twitter_secret', req.session['oauth_twitter'].oauth_token_secret
   res.redirect '/'
+
+app.get '/post', (req, res) ->
+  fetchUser req.session.passport.user, (user) ->
+    if user.id
+      twit = new twitter {
+        consumer_key: process.env.TWITTER_CONSUMER_KEY
+        consumer_secret: process.env.TWITTER_CONSUMER_SECRET
+        access_token_key: user['oauth:twitter_key']
+        access_token_secret: user['oauth:twitter_secret']
+      }
+      twit.updateStatus req.params.message, (rsp) -> console.log rsp
+      res.json { success: true }
+    else
+      res.json { success: false }
 
 port = process.env.PORT || 3000
 app.listen port

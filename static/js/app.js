@@ -2,9 +2,13 @@
 (function() {
   var HomeController;
 
-  HomeController = function($scope, $http) {};
+  HomeController = function($scope, $http, $cookies) {
+    return $http.get('/user').success(function(user) {
+      return $scope.user = user;
+    });
+  };
 
-  angular.module('badgr', []).config([
+  angular.module('badgr', ['ngCookies']).config([
     '$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
       $routeProvider.when('/', {
         templateUrl: '/partials/home.html',

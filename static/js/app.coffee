@@ -1,4 +1,5 @@
-HomeController = ($scope, $http) ->
+HomeController = ($scope, $http, $cookies) ->
+  $http.get('/user').success (user) -> $scope.user = user
 
 angular.module('badgr', ['ngCookies'])
   .config([ '$routeProvider', '$locationProvider', '$httpProvider', ($routeProvider, $locationProvider, $httpProvider) ->
